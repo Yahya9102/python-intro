@@ -1,4 +1,4 @@
-from users import add_user, list_users, user_exists, delete_user
+from .users import add_user, list_users, user_exists, delete_user
 
 
 def show_menu():
