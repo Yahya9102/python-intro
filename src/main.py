@@ -1,10 +1,12 @@
+from colorama import Fore, Style
+from rich import print
 
 def main():
     dishes = []
     while True:
-        print("\n------Meny------")
-        print("1. Lägg till maträtt")
-        print("2. Lista alla maträtter")
+        print(Fore.RED +"\n------Meny------" + Style.RESET_ALL)
+        print(Fore.GREEN + "1. Lägg till maträtt" + Style.RESET_ALL)
+        print("[red]2. Lista alla maträtter[/red]")
         print("3. Ändra maträtt")
         print("4. Lunchmeny")
         print("0. Avsluta")
@@ -42,9 +44,8 @@ if __name__ == "__main__":
     main()
 
 
+"""
 
-
-""" 
 
 from .users import add_user, list_users, user_exists, delete_user
 
