@@ -1,6 +1,16 @@
-from .users import add_user, list_users, user_exists, delete_user
+
+from .server import run_server
 
 
+def main():
+    run_server()
+
+
+if __name__ == "__main__":
+    main()
+
+
+""""
 def show_menu():
     print("1. Lägg till användare")
     print("2. Lista alla användare")
@@ -69,3 +79,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+"""    
