@@ -44,6 +44,60 @@ class UserRequestHandler(BaseHTTPRequestHandler):
 
 
 
+    def do_POST(self):
+
+        if self.path != "/users":
+            return self.send_json({"error": "Not found"}, status=404)
+        
+        content_lenght = int(self.headers.get("Content-Length"), 0)
+        body = self.rfile.read(content_lenght)
+
+        
+        try:
+           data = json.loads(body)
+           name = data.get("name", "")
+        except json.JSONDecodeError:
+            return self.send_json({"error": "invalid JSON"}, status=400)
+
+
+        sucess = add_user(name)
+
+        if sucess:
+            return self.send_json({
+                "success": True,
+                "message": f"Added user '{name.strip()}'"
+            })
+
+        else:
+            return self.send_json({
+                "success": False,
+                "message": "User invalid or already exists"
+            }, status=400)
+
+
+
+    def do_DELETE(self):
+        path = self.path.strip("/")
+
+        if not path.startswith("users/"):
+            return self.send_json({"error": "Not found"}, status=400)
+        
+        parts = path.split("/")
+        if len(parts) != 2:
+            return self.send_json({"error": "Bad request"}, status=400)
+        
+        name = parts[1]
+
+        success, message = delete_user(name)
+
+        if success:
+            return self.send_json({"success": True, "message": message})
+
+        else:
+            return self.send_json({"success": False, "message": message}, status=404)
+
+
+
 
 
 def run_server():

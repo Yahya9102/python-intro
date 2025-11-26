@@ -18,12 +18,12 @@ def add_user(name):
     return True
 
 
-
+# CHECK
 def list_users():
     return users
 
 
-
+# CHECK 
 def user_exists(name):
 
     cleaned_name = name.strip()
