@@ -48,3 +48,5 @@ media/
 # OS files
 .DS_Store
 Thumbs.db
+# ENV 
+.env
