@@ -1,12 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-# Tom lista som vi kan använda för att spara våra usernames i 
-
-
-users = []
-
-
 from db import Base, engine, SessionLocal
 
 
@@ -57,7 +51,10 @@ def add_user(name):
 
 # CHECK
 def list_users():
-    return users
+    
+    with get_session() as session:
+        users = session.query(User).all()
+        return [u.name for u in users]
 
 
 # CHECK 
