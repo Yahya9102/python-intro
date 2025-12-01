@@ -1,5 +1,36 @@
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 # Tom lista som vi kan använda för att spara våra usernames i 
+
+
 users = []
+
+
+from db import Base, engine, SessionLocal
+
+
+class User(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True,nullable=False)
+
+    def __repr__(self):
+        return f"User(id={self.id})"
+    
+
+Base.metadata.create_all(bind=engine)
+
+
+
+def get_session() -> Session:
+    
+    return SessionLocal()
+
+
+
+
 
 
 def add_user(name):
@@ -10,12 +41,18 @@ def add_user(name):
     if len(cleaned_name) == 0:
         return False
 
-    # Kontrollera om användarnamnet redan finns i listan 
-    if cleaned_name in users:
-        return False
+    new_user = User(name=cleaned_name)
 
-    users.append(cleaned_name)
-    return True
+
+    with get_session() as session:
+        session.add(new_user)
+        try:
+            session.commit()
+            return True
+        except IntegrityError:
+            session.rollback()
+            return False
+    
 
 
 # CHECK
