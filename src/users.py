@@ -61,11 +61,15 @@ def list_users():
 def user_exists(name):
 
     cleaned_name = name.strip()
-    if cleaned_name in users:
-        return True, f"Användare '{cleaned_name}' finns i listan."
-    else:
-        return False, f"Användare ''{cleaned_name} finns inte i listan."
     
+    with get_session() as session:
+        user = session.query(User).filter(User.name == cleaned_name).first()
+
+        if user:
+            return True, f"Användare '{cleaned_name}' finns i listan."
+        else:
+            return False, f"Användare '{cleaned_name}' finns inte i listan"
+
 
 
 
@@ -74,9 +78,39 @@ def delete_user(name):
     cleaned_name = name.strip()
 
 
-    if cleaned_name in users:
-        users.remove(cleaned_name)
-        return True, f"Användare '{cleaned_name}' har tagits bort."
-    else:
-        return False, f"Användare '{cleaned_name}' finns inte i listan."
+    with get_session() as session:
+        user = session.query(User).filter(User.name == cleaned_name).first()
 
+    
+    if not user:
+        return False, f"Användare '{cleaned_name}' finns inte i listan."
+    
+    session.delete(user)
+    session.commit()
+    return True, f"Användare '{cleaned_name}' har tagits bort"
+
+
+
+def update_user(old_name: str, new_name: str):
+
+    cleaned_old = old_name.strip()
+    cleaned_new = new_name.strip()
+
+    if len(cleaned_new) == 0:
+        return False, "Kan inte vara tom"
+    
+    with get_session() as session:
+        user = session.query(User).filter(User.name == cleaned_old).first()
+
+        if not user:
+            return False, f"Användare '{cleaned_old}' finns inte med i listan"
+        
+
+        exisiting = session.query(User).filter(User.name == cleaned_new).first()
+        if exisiting:
+            return False, f"Användare '{cleaned_new}' finns redan i listan"
+        
+        user.name = cleaned_new
+        session.commit()
+        return True, f"Användare '{cleaned_old}' har uppdaterats till '{cleaned_new}'"
+    

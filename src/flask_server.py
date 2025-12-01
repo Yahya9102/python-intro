@@ -1,6 +1,6 @@
 from flask import Flask, jsonify,request
 
-from users import add_user, list_users, user_exists, delete_user
+from users import add_user, list_users, user_exists, delete_user, update_user
 
 app = Flask(__name__)
 
@@ -47,6 +47,23 @@ def remove_user(name):
     else: 
         return jsonify({"success": False, "message": message})
 
+
+
+
+@app.put("/users/<old_name>")
+def update_user_route(old_name):
+
+    data = request.get_json(silent=True)
+    if not data or "name" not in data:
+        return jsonify({"error": "Missing name in json body"})
+
+    new_name = data["name"]
+    
+    success, message = update_user(old_name, new_name)
+    if success:
+        return jsonify({"success": True, "message": message}), 200
+    else:
+        return jsonify({"success": False, "message": message}), 400
 
 
 app.run(host="0.0.0.0", port=5000)
